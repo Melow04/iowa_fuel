@@ -1,11 +1,11 @@
 # 🌽 Iowa Motor Fuel Sales Dashboard
 
 A comprehensive Python dashboard application for analyzing Iowa Motor Fuel Sales data with both descriptive and predictive analytics capabilities.
-Made by Fortune Analytics:
--Aldave, Adrian
--Cortes, Karmelo
--Mangubat, John Erick
--Villa, Daniel
+## Made by Fortune Analytics:
+- Aldave, Adrian
+- Cortes, Karmelo
+- Mangubat, John Erick
+- Villa, Daniel
 
 ![Dashboard Preview](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
