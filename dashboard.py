@@ -1001,7 +1001,7 @@ def main():
             st.image("Flag.png", width=100)
         with col2:
             st.markdown("""
-            <div style="padding-top: 10px;">
+            <div style="padding-top: 5px;">
                 <h2 style="margin: 0; color: white;">Iowa Fuel Dashboard</h2>
             </div>
             """, unsafe_allow_html=True)
