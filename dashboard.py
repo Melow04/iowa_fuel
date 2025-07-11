@@ -838,7 +838,7 @@ def main():
     st.markdown("---")
     st.markdown("""
     <div style="text-align: center; color: #666; font-size: 0.8rem;">
-        Iowa Motor Fuel Sales Dashboard | Data Analytics & Predictions
+        Iowa Motor Fuel Sales Dashboard | Data Analytics & Predictions | Fortune Analytics
     </div>
     """, unsafe_allow_html=True)
 
