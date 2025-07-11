@@ -28,22 +28,16 @@ st.markdown("""
         font-weight: bold;
         text-align: center;
         margin-bottom: 2rem;
-        color: #1f77b4;
-    }
-    .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #1f77b4;
+         color: white;
     }
     .section-header {
         font-size: 1.8rem;
         font-weight: bold;
         margin: 2rem 0 1rem 0;
-        color: white;
+         color: white;
     }
     .insight-box {
-        background-color: #3498db;
+        background: linear-gradient(to right, #2c3e50 0%, black 100%);;
         padding: 1rem;
         border-radius: 0.5rem;
         margin: 1rem 0;
@@ -64,7 +58,6 @@ st.markdown("""
     }
     .correlation-metric {
         background: linear-gradient(to right, #2c3e50 0%, black 100%);
-     
         color: white;
         padding: 1rem;
         border-radius: 0.5rem;
@@ -233,6 +226,71 @@ def create_trend_analysis(df):
         
         st.plotly_chart(fig2, use_container_width=True)
 
+    # Key Insights Section
+    st.markdown("### 📊 Trend Analysis Insights")
+
+    # Calculate key metrics
+    total_years = len(annual_data)
+    latest_year = annual_data['Calendar Year'].max()
+    earliest_year = annual_data['Calendar Year'].min()
+
+    # Growth calculations
+    if len(annual_data) >= 2:
+        latest_biofuel = annual_data[annual_data['Calendar Year'] == latest_year]['Biofuel Distribution Percentage'].iloc[0]
+        earliest_biofuel = annual_data[annual_data['Calendar Year'] == earliest_year]['Biofuel Distribution Percentage'].iloc[0]
+        biofuel_growth = ((latest_biofuel - earliest_biofuel) / earliest_biofuel * 100) if earliest_biofuel > 0 else 0
+        
+        # Total fuel sales growth
+        latest_total = annual_data.iloc[-1][['Non-Ethanol Gasoline Sales (in gallons)', 'Ethanol Gasoline Sales (in gallons)', 
+                                            'Clear and Dyed Diesel Sales (in gallons)', 'Clear and Dyed Biodiesel Sales (in gallons)', 
+                                            'Pure Biodiesel Sales (in gallons)']].sum()
+        earliest_total = annual_data.iloc[0][['Non-Ethanol Gasoline Sales (in gallons)', 'Ethanol Gasoline Sales (in gallons)', 
+                                             'Clear and Dyed Diesel Sales (in gallons)', 'Clear and Dyed Biodiesel Sales (in gallons)', 
+                                             'Pure Biodiesel Sales (in gallons)']].sum()
+        total_growth = ((latest_total - earliest_total) / earliest_total * 100) if earliest_total > 0 else 0
+        
+        # Peak year analysis
+        peak_year_biofuel = annual_data.loc[annual_data['Biofuel Distribution Percentage'].idxmax(), 'Calendar Year']
+        peak_biofuel_pct = annual_data['Biofuel Distribution Percentage'].max()
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown(f"""
+            <div class="insight-box">
+                <strong>🔍 Key Trend Findings:</strong><br>
+                • <strong>Analysis Period:</strong> {int(earliest_year)}-{int(latest_year)} ({total_years} years)<br>
+                • <strong>Biofuel Growth:</strong> {biofuel_growth:+.1f}% over period<br>
+                • <strong>Total Fuel Growth:</strong> {total_growth:+.1f}% over period<br>
+                • <strong>Peak Biofuel Year:</strong> {int(peak_year_biofuel)} ({peak_biofuel_pct:.1f}%)<br>
+                • <strong>Current Biofuel Share:</strong> {latest_biofuel:.1f}% of total distribution
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            # Dominant fuel type analysis
+            latest_data = annual_data.iloc[-1]
+            fuel_types_latest = {
+                'Non-Ethanol Gasoline': latest_data['Non-Ethanol Gasoline Sales (in gallons)'],
+                'Ethanol Gasoline': latest_data['Ethanol Gasoline Sales (in gallons)'],
+                'Diesel': latest_data['Clear and Dyed Diesel Sales (in gallons)'],
+                'Biodiesel': latest_data['Clear and Dyed Biodiesel Sales (in gallons)'],
+                'Pure Biodiesel': latest_data['Pure Biodiesel Sales (in gallons)']
+            }
+            dominant_fuel = max(fuel_types_latest, key=fuel_types_latest.get)
+            dominant_share = (fuel_types_latest[dominant_fuel] / sum(fuel_types_latest.values()) * 100)
+            
+            st.markdown(f"""
+            <div class="insight-box">
+                <strong>⛽ Fuel Mix Insights:</strong><br>
+                • <strong>Dominant Fuel:</strong> {dominant_fuel} ({dominant_share:.1f}%)<br>
+                • <strong>Total Volume ({int(latest_year)}):</strong> {sum(fuel_types_latest.values())/1e6:.1f}M gallons<br>
+                • <strong>Biofuel Trend:</strong> {'📈 Growing' if biofuel_growth > 0 else '📉 Declining'}<br>
+                • <strong>Market Maturity:</strong> {'Established' if total_years > 5 else 'Developing'}<br>
+                • <strong>Sustainability Index:</strong> {latest_biofuel/10:.1f}/10
+            </div>
+            """, unsafe_allow_html=True)
+
 def create_county_analysis(df):
     """Create county-level analysis"""
     st.markdown('<div class="section-header">🗺️ County-Level Insights</div>', unsafe_allow_html=True)
@@ -277,6 +335,49 @@ def create_county_analysis(df):
         )
         fig4.update_layout(height=400)
         st.plotly_chart(fig4, use_container_width=True)
+
+    # County Analysis Insights
+    st.markdown("### 📊 County Performance Insights")
+
+    # Calculate key metrics
+    total_counties = len(county_data)
+    top_performer = county_data.loc[county_data['Total Fuel Sales'].idxmax()]
+    biofuel_leader = county_data.loc[county_data['Biofuel Distribution Percentage'].idxmax()]
+
+    # Market concentration analysis
+    top_5_sales = county_data.nlargest(5, 'Total Fuel Sales')['Total Fuel Sales'].sum()
+    total_sales = county_data['Total Fuel Sales'].sum()
+    market_concentration = (top_5_sales / total_sales * 100) if total_sales > 0 else 0
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown(f"""
+        <div class="insight-box">
+            <strong>🏆 Top Performers:</strong><br>
+            • <strong>Sales Leader:</strong> {top_performer['County']}<br>
+            • <strong>Sales Volume:</strong> {top_performer['Total Fuel Sales']/1e6:.1f}M gallons<br>
+            • <strong>Biofuel Champion:</strong> {biofuel_leader['County']}<br>
+            • <strong>Biofuel Rate:</strong> {biofuel_leader['Biofuel Distribution Percentage']:.1f}%<br>
+            • <strong>Avg Locations:</strong> {top_performer['Number of Retail Locations']:.0f}
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        # Market distribution analysis
+        avg_biofuel = county_data['Biofuel Distribution Percentage'].mean()
+        high_biofuel_counties = len(county_data[county_data['Biofuel Distribution Percentage'] > avg_biofuel])
+        
+        st.markdown(f"""
+        <div class="insight-box">
+            <strong>📈 Market Analysis:</strong><br>
+            • <strong>Total Counties:</strong> {total_counties}<br>
+            • <strong>Market Concentration:</strong> Top 5 = {market_concentration:.1f}%<br>
+            • <strong>Avg Biofuel Rate:</strong> {avg_biofuel:.1f}%<br>
+            • <strong>Above-Average Counties:</strong> {high_biofuel_counties} ({high_biofuel_counties/total_counties*100:.1f}%)<br>
+            • <strong>Market Maturity:</strong> {'Diverse' if market_concentration < 50 else 'Concentrated'}
+        </div>
+        """, unsafe_allow_html=True)
 
 def create_fuel_comparison(df):
     """Create fuel type comparison visualizations"""
@@ -344,6 +445,63 @@ def create_fuel_comparison(df):
             )
             fig6.update_layout(height=400)
             st.plotly_chart(fig6, use_container_width=True)
+
+    # Fuel Comparison Insights
+    st.markdown("### 📊 Fuel Mix Analysis Insights")
+
+    if len(fuel_totals) > 0:
+        latest_year = fuel_totals['Calendar Year'].max()
+        latest_data = fuel_totals[fuel_totals['Calendar Year'] == latest_year].iloc[0]
+        
+        # Calculate fuel shares
+        total_latest = latest_data[['Non-Ethanol Gasoline Sales (in gallons)', 'Ethanol Gasoline Sales (in gallons)', 
+                                   'Clear and Dyed Diesel Sales (in gallons)', 'Clear and Dyed Biodiesel Sales (in gallons)', 
+                                   'Pure Biodiesel Sales (in gallons)']].sum()
+        
+        gasoline_share = (latest_data['Non-Ethanol Gasoline Sales (in gallons)'] + latest_data['Ethanol Gasoline Sales (in gallons)']) / total_latest * 100
+        diesel_share = (latest_data['Clear and Dyed Diesel Sales (in gallons)'] + latest_data['Clear and Dyed Biodiesel Sales (in gallons)'] + latest_data['Pure Biodiesel Sales (in gallons)']) / total_latest * 100
+        biofuel_share = (latest_data['Clear and Dyed Biodiesel Sales (in gallons)'] + latest_data['Pure Biodiesel Sales (in gallons)']) / total_latest * 100
+        
+        # Growth analysis
+        if len(fuel_totals) >= 2:
+            earliest_data = fuel_totals.iloc[0]
+            earliest_total = earliest_data[['Non-Ethanol Gasoline Sales (in gallons)', 'Ethanol Gasoline Sales (in gallons)', 
+                                           'Clear and Dyed Diesel Sales (in gallons)', 'Clear and Dyed Biodiesel Sales (in gallons)', 
+                                           'Pure Biodiesel Sales (in gallons)']].sum()
+            
+            volume_growth = ((total_latest - earliest_total) / earliest_total * 100) if earliest_total > 0 else 0
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown(f"""
+                <div class="insight-box">
+                    <strong>⛽ Current Fuel Mix ({int(latest_year)}):</strong><br>
+                    • <strong>Gasoline (Total):</strong> {gasoline_share:.1f}%<br>
+                    • <strong>Diesel (Total):</strong> {diesel_share:.1f}%<br>
+                    • <strong>Biofuels:</strong> {biofuel_share:.1f}%<br>
+                    • <strong>Total Volume:</strong> {total_latest/1e6:.1f}M gallons<br>
+                    • <strong>Volume Growth:</strong> {volume_growth:+.1f}% over period
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col2:
+                # Market trends
+                ethanol_share = latest_data['Ethanol Gasoline Sales (in gallons)'] / total_latest * 100
+                biodiesel_share = latest_data['Clear and Dyed Biodiesel Sales (in gallons)'] / total_latest * 100
+                
+                sustainability_score = biofuel_share * 2  # Simple sustainability metric
+                
+                st.markdown(f"""
+                <div class="insight-box">
+                    <strong>🌱 Sustainability Metrics:</strong><br>
+                    • <strong>Ethanol Adoption:</strong> {ethanol_share:.1f}%<br>
+                    • <strong>Biodiesel Adoption:</strong> {biodiesel_share:.1f}%<br>
+                    • <strong>Renewable Share:</strong> {biofuel_share:.1f}%<br>
+                    • <strong>Sustainability Score:</strong> {sustainability_score:.1f}/100<br>
+                    • <strong>Market Trend:</strong> {'🌱 Green Transition' if biofuel_share > 10 else '⚡ Traditional Focus'}
+                </div>
+                """, unsafe_allow_html=True)
 
 def create_retail_analysis(df):
     """Create comprehensive retail location analysis"""
@@ -544,6 +702,59 @@ def create_retail_analysis(df):
     </div>
     """, unsafe_allow_html=True)
 
+    # Enhanced Business Intelligence Section
+    st.markdown("### 💼 Business Intelligence Summary")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        # Performance metrics
+        high_performers = correlation_data[correlation_data['Sales_per_Location'] > correlation_data['Sales_per_Location'].median()]
+        performance_rate = len(high_performers) / len(correlation_data) * 100
+        
+        st.markdown(f"""
+        <div class="insight-box">
+            <strong>📊 Performance Metrics:</strong><br>
+            • <strong>High Performers:</strong> {len(high_performers)} counties<br>
+            • <strong>Performance Rate:</strong> {performance_rate:.1f}%<br>
+            • <strong>Median Efficiency:</strong> {correlation_data['Sales_per_Location'].median():,.0f} gal/location<br>
+            • <strong>Best Practice:</strong> {top_efficient.iloc[0]['County']}<br>
+            • <strong>Improvement Potential:</strong> {(correlation_data['Sales_per_Location'].max() / correlation_data['Sales_per_Location'].median() - 1) * 100:.0f}%
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        # Market opportunity analysis
+        low_location_high_sales = correlation_data[
+            (correlation_data['Number of Retail Locations'] < correlation_data['Number of Retail Locations'].median())
+    ]
+    
+    st.markdown(f"""
+    <div class="insight-box">
+        <strong>🎯 Market Opportunities:</strong><br>
+        • <strong>Underserved Markets:</strong> {len(low_location_high_sales)} counties<br>
+        • <strong>Expansion Potential:</strong> {'High' if len(low_location_high_sales) > 3 else 'Moderate'}<br>
+        • <strong>Infrastructure Gap:</strong> {(correlation_data['Number of Retail Locations'].max() - correlation_data['Number of Retail Locations'].min()):.0f} locations<br>
+        • <strong>Market Saturation:</strong> {'Low' if avg_locations < 50 else 'High'}<br>
+        • <strong>Growth Strategy:</strong> {'Expand Locations' if corr_locations_sales > 0.5 else 'Optimize Existing'}
+    </div>
+    """, unsafe_allow_html=True)
+
+    with col3:
+    # Strategic recommendations
+        biofuel_correlation_strength = "Strong" if abs(corr_locations_biofuel) > 0.5 else "Weak"
+    
+    st.markdown(f"""
+    <div class="insight-box">
+        <strong>💡 Strategic Insights:</strong><br>
+        • <strong>Location Strategy:</strong> {'Scale-driven' if corr_locations_sales > 0.6 else 'Quality-focused'}<br>
+        • <strong>Biofuel Readiness:</strong> {biofuel_correlation_strength}<br>
+        • <strong>Market Maturity:</strong> {'Mature' if len(correlation_data) > 50 else 'Developing'}<br>
+        • <strong>Competitive Advantage:</strong> {'Efficiency' if correlation_data['Sales_per_Location'].std() > 100000 else 'Scale'}<br>
+        • <strong>Investment Priority:</strong> {'New Locations' if corr_locations_sales > 0.5 else 'Existing Optimization'}
+    </div>
+    """, unsafe_allow_html=True)
+
 def create_predictive_model(df):
     """Create predictive models for biofuel distribution"""
     st.markdown('<div class="section-header">🔮 Predictive Analytics</div>', unsafe_allow_html=True)
@@ -683,6 +894,90 @@ def create_predictive_model(df):
         
         st.plotly_chart(fig10, use_container_width=True)
 
+    # Predictive Analytics Insights
+    st.markdown("### 🔮 Predictive Intelligence Summary")
+
+    # Model performance analysis
+    best_model = "Random Forest" if rf_r2 > lr_r2 else "Linear Regression"
+    best_r2 = max(rf_r2, lr_r2)
+    model_reliability = "High" if best_r2 > 0.8 else "Moderate" if best_r2 > 0.6 else "Low"
+
+    # Future trend analysis
+    future_avg = future_df[['Random Forest Prediction', 'Linear Regression Prediction']].mean().mean()
+    current_avg = historical_trend['Biofuel Distribution Percentage'].iloc[-1] if len(historical_trend) > 0 else 0
+    trend_direction = "Increasing" if future_avg > current_avg else "Decreasing"
+    trend_magnitude = abs(future_avg - current_avg)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown(f"""
+        <div class="insight-box">
+            <strong>🤖 Model Performance:</strong><br>
+            • <strong>Best Model:</strong> {best_model}<br>
+            • <strong>Accuracy (R²):</strong> {best_r2:.3f}<br>
+            • <strong>Reliability:</strong> {model_reliability}<br>
+            • <strong>Prediction Error:</strong> {min(rf_mae, lr_mae):.2f}%<br>
+            • <strong>Model Confidence:</strong> {best_r2*100:.1f}%
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        # Future outlook
+        forecast_years = len(future_df)
+        
+        st.markdown(f"""
+        <div class="insight-box">
+            <strong>📈 Future Outlook (2025-2027):</strong><br>
+            • <strong>Trend Direction:</strong> {trend_direction}<br>
+            • <strong>Expected Change:</strong> {trend_magnitude:+.1f}%<br>
+            • <strong>Forecast Period:</strong> {forecast_years} years<br>
+            • <strong>Market Evolution:</strong> {'Rapid Growth' if trend_magnitude > 2 else 'Steady Progress'}<br>
+            • <strong>Strategic Horizon:</strong> {'Transformative' if future_avg > 15 else 'Incremental'}
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Feature importance insights
+    if hasattr(rf_model, 'feature_importances_'):
+        most_important_feature = importance_df.iloc[0]['Feature']
+        importance_score = importance_df.iloc[0]['Importance']
+        
+        st.markdown("### 🎯 Key Success Factors")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown(f"""
+            <div class="insight-box">
+                <strong>🔑 Critical Success Factors:</strong><br>
+                • <strong>Primary Driver:</strong> {most_important_feature}<br>
+                • <strong>Influence Score:</strong> {importance_score:.3f}<br>
+                • <strong>Predictive Power:</strong> {'High' if importance_score > 0.4 else 'Moderate'}<br>
+                • <strong>Business Impact:</strong> {'Strategic' if 'Year' in most_important_feature else 'Operational'}<br>
+                • <strong>Control Level:</strong> {'External' if 'Year' in most_important_feature else 'Internal'}
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            # Strategic recommendations based on predictions
+            if trend_direction == "Increasing":
+                strategy = "Accelerate biofuel infrastructure investment"
+                priority = "High"
+            else:
+                strategy = "Optimize current biofuel operations"
+                priority = "Medium"
+                
+            st.markdown(f"""
+            <div class="insight-box">
+                <strong>💼 Strategic Recommendations:</strong><br>
+                • <strong>Primary Strategy:</strong> {strategy}<br>
+                • <strong>Investment Priority:</strong> {priority}<br>
+                • <strong>Timeline:</strong> {'Immediate' if trend_magnitude > 2 else 'Medium-term'}<br>
+                • <strong>Risk Level:</strong> {'Low' if model_reliability == 'High' else 'Moderate'}<br>
+                • <strong>Success Probability:</strong> {best_r2*100:.0f}%
+            </div>
+            """, unsafe_allow_html=True)
+
 def main():
     """Main dashboard function"""
     
@@ -700,7 +995,17 @@ def main():
     
     # Sidebar
     with st.sidebar:
-        st.title("Iowa Fuel Dashboard")
+        # Header with Iowa flag and title
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.image("Flag.png", width=100)
+        with col2:
+            st.markdown("""
+            <div style="padding-top: 10px;">
+                <h2 style="margin: 0; color: white;">Iowa Fuel Dashboard</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
         st.markdown("---")
         
         # Logo with improved styling
@@ -838,7 +1143,7 @@ def main():
     st.markdown("---")
     st.markdown("""
     <div style="text-align: center; color: #666; font-size: 0.8rem;">
-        Iowa Motor Fuel Sales Dashboard | Data Analytics & Predictions | Fortune Analytics
+        Iowa Motor Fuel Sales Dashboard | Data Analytics & Predictions
     </div>
     """, unsafe_allow_html=True)
 
