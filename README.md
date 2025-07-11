@@ -11,13 +11,28 @@ A comprehensive Python dashboard application for analyzing Iowa Motor Fuel Sales
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Plotly](https://img.shields.io/badge/Plotly-239120?style=for-the-badge&logo=plotly&logoColor=white)
 
+## 🚀 New Features & Updates
+
+### ✨ **Latest Enhancements**
+- **🎯 Advanced Year Filtering**: All Years, Year Range, or Single Year selection
+- **🏪 Enhanced Retail Analysis**: Multi-dimensional correlation analysis with visual metrics
+- **📊 Interactive Visualizations**: Bubble charts, dual-axis plots, and trend lines
+- **🔍 Sales Efficiency Metrics**: Sales per retail location analysis
+- **📈 Correlation Insights**: Automated strength interpretation and color coding
+- **🎨 Professional Styling**: Gradient backgrounds and improved visual design
+
 ## 📊 Features
 
 ### 🔍 Descriptive Analytics
 - **📈 Trend Analysis**: Interactive line charts showing fuel sales trends and biofuel distribution over time
 - **🗺️ County Insights**: Top 10 counties by fuel sales and biofuel distribution percentage
 - **⛽ Fuel Comparison**: Stacked area charts and pie charts showing fuel mix composition
-- **🏪 Retail Analysis**: Correlation analysis between retail locations and fuel sales
+- **🏪 Advanced Retail Analysis**: 
+  - Multi-dimensional correlation analysis
+  - Sales efficiency metrics (sales per location)
+  - Distribution analysis across counties
+  - Visual correlation strength indicators
+  - Dual-axis visualizations combining multiple metrics
 
 ### 🔮 Predictive Analytics
 - **Machine Learning Models**: Random Forest and Linear Regression algorithms
@@ -26,17 +41,21 @@ A comprehensive Python dashboard application for analyzing Iowa Motor Fuel Sales
 - **Feature Importance**: Analysis of key predictive factors
 
 ### 🎨 Dashboard Features
+- **📅 Flexible Year Filtering**: 
+  - All Years: Complete dataset analysis
+  - Year Range: Custom date range selection
+  - Single Year: Focus on specific year
 - **Interactive Visualizations**: Built with Plotly for rich, interactive charts
 - **Sidebar Navigation**: Easy switching between analysis types
-- **Real-time Data Loading**: Automatically fetches data from CSV URL
+- **Real-time Data Loading**: Automatically processes CSV data
 - **Responsive Design**: Multi-column layouts optimized for different screen sizes
-- **Professional Styling**: Clean, modern interface with custom CSS
+- **Professional Styling**: Clean, modern interface with custom CSS and gradients
 
 ## 📋 Dataset Information
 
-- **Records**: 1,273 fuel sales records
-- **Coverage**: All Iowa counties
-- **Time Period**: Multiple years of historical data
+- **Records**: 1,273+ fuel sales records
+- **Coverage**: All Iowa counties (99 counties)
+- **Time Period**: Multi-year historical data (2010-2023)
 - **Fuel Types**: 5 categories including ethanol, biodiesel, and traditional fuels
 - **Data Source**: Iowa Motor Fuel Sales (Cleaned dataset)
 
@@ -56,7 +75,7 @@ A comprehensive Python dashboard application for analyzing Iowa Motor Fuel Sales
 
 ### Option 1: One-Click Setup (Windows)
 1. Download all files to a folder
-2. Double-click \`run_dashboard.bat\`
+2. Double-click `run_dashboard.bat`
 3. Dashboard opens automatically in your browser
 
 ### Option 2: Manual Setup
@@ -76,8 +95,9 @@ streamlit run dashboard.py
    \`\`\`
 
 2. **Save the files**
-   - Copy \`dashboard.py\` to the folder
-   - Copy \`requirements.txt\` to the folder
+   - Copy `dashboard.py` to the folder
+   - Copy `requirements.txt` to the folder
+   - Copy your CSV data file as `Cleaned_Iowa_Motor_Fuel_Sales.csv`
 
 3. **Install and run**
    \`\`\`bash
@@ -99,32 +119,40 @@ streamlit run dashboard.py
 - **Python**: 3.8 or higher
 - **RAM**: 4GB minimum (8GB recommended)
 - **Storage**: 100MB free space
-- **Internet**: Required for initial data loading
+- **Internet**: Optional (for enhanced features)
 
 ## 🎯 How to Use
 
-### 1. Navigation
+### 1. Year Filtering (New!)
+- **All Years**: Analyze complete dataset
+- **Year Range**: Select custom date range with slider
+- **Single Year**: Focus on specific year analysis
+
+### 2. Navigation
 - Use the **sidebar** to switch between analysis types
 - Select **"📊 Descriptive Analytics"** for historical insights
 - Choose **"🔮 Predictive Analytics"** for future forecasts
 
-### 2. Descriptive Analytics Options
+### 3. Descriptive Analytics Options
 - **📈 Trend Analysis**: View fuel sales trends over time
 - **🗺️ County Insights**: Explore county-level performance
 - **⛽ Fuel Comparison**: Compare different fuel types
-- **🏪 Retail Analysis**: Analyze retail location impacts
+- **🏪 Retail Analysis**: Advanced retail location analysis with correlations
 - **📋 All Descriptive**: View all descriptive analytics at once
 
-### 3. Predictive Analytics
-- **Model Comparison**: Compare Random Forest vs Linear Regression
-- **Future Predictions**: View 2025-2027 biofuel distribution forecasts
-- **Feature Importance**: Understand key prediction factors
+### 4. Enhanced Retail Analysis Features
+- **Correlation Metrics**: Visual cards showing relationship strength
+- **Bubble Charts**: Multi-dimensional scatter plots
+- **Efficiency Analysis**: Sales per retail location metrics
+- **Distribution Analysis**: Histogram of retail locations
+- **Dual-Axis Charts**: Combined location and biofuel percentage views
 
-### 4. Interactive Features
+### 5. Interactive Features
 - **Hover** over charts for detailed information
 - **Zoom and pan** on visualizations
 - **Legend clicking** to show/hide data series
 - **Responsive design** adapts to your screen size
+- **Year filtering** updates all visualizations dynamically
 
 ## 📈 Key Insights Available
 
@@ -132,124 +160,45 @@ streamlit run dashboard.py
 - Annual fuel sales by type (millions of gallons)
 - Biofuel distribution percentage growth over time
 - Seasonal patterns and long-term trends
+- Year-over-year comparisons
 
 ### County Performance
 - Top performing counties by total fuel sales
 - Counties with highest biofuel adoption rates
 - Geographic distribution patterns
+- County-specific year filtering
 
 ### Fuel Mix Analysis
 - Composition of fuel types over time
 - Market share evolution
 - Biofuel vs traditional fuel trends
+- Temporal fuel mix changes
+
+### Advanced Retail Insights
+- **Correlation Analysis**: 
+  - Retail locations vs total fuel sales
+  - Retail locations vs biofuel distribution percentage
+  - Automated correlation strength interpretation
+- **Efficiency Metrics**: Sales per retail location by county
+- **Distribution Patterns**: Retail location spread across counties
+- **Performance Benchmarking**: Top performing counties by efficiency
 
 ### Predictive Insights
-- Future biofuel distribution forecasts
-- Model accuracy metrics
+- Future biofuel distribution forecasts (2025-2027)
+- Model accuracy metrics and comparisons
 - Key factors influencing predictions
+- Feature importance analysis
 
-## 🔧 Customization
+## 🔧 Technical Enhancements
 
-### Adding New Visualizations
-1. Create a new function in \`dashboard.py\`
-2. Add the function call to the main navigation logic
-3. Update the sidebar options if needed
+### New Correlation Analysis System
+```python
+def calculate_correlation(x, y):
+    """Calculate correlation coefficient manually"""
+    # Handles missing data and edge cases
+    # Returns robust correlation values
 
-### Modifying Data Source
-1. Update the URL in the \`load_data()\` function
-2. Adjust column mappings if schema differs
-3. Update data preprocessing steps as needed
-
-### Styling Changes
-1. Modify the CSS in the \`st.markdown()\` section
-2. Update Plotly chart themes and colors
-3. Adjust layout and spacing parameters
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Dashboard won't start**
-- Ensure Python 3.8+ is installed
-- Check that all requirements are installed: \`pip install -r requirements.txt\`
-- Verify internet connection for data loading
-
-**Charts not displaying**
-- Clear browser cache and refresh
-- Check browser console for JavaScript errors
-- Try a different browser (Chrome, Firefox, Safari)
-
-**Data loading errors**
-- Verify internet connection
-- Check if the data URL is accessible
-- Look for error messages in the terminal
-
-**Performance issues**
-- Close other browser tabs
-- Restart the dashboard
-- Check available system memory
-
-### Getting Help
-1. Check the terminal/command prompt for error messages
-2. Ensure all files are in the same directory
-3. Verify Python and package versions
-4. Try running individual components to isolate issues
-
-## 📊 Technical Architecture
-
-### Data Pipeline
-1. **Data Loading**: Fetches CSV from remote URL
-2. **Data Cleaning**: Handles missing values and type conversions
-3. **Feature Engineering**: Calculates derived metrics
-4. **Caching**: Uses Streamlit's caching for performance
-
-### Visualization Stack
-- **Frontend**: Streamlit web framework
-- **Charts**: Plotly for interactive visualizations
-- **Styling**: Custom CSS for professional appearance
-- **Layout**: Responsive multi-column design
-
-### Machine Learning Pipeline
-- **Data Preparation**: Feature selection and preprocessing
-- **Model Training**: Random Forest and Linear Regression
-- **Evaluation**: MAE and R² score metrics
-- **Prediction**: Future trend forecasting
-
-## 🤝 Contributing
-
-### Development Setup
-1. Fork the repository
-2. Create a virtual environment
-3. Install development dependencies
-4. Make your changes
-5. Test thoroughly
-6. Submit a pull request
-
-### Code Style
-- Follow PEP 8 Python style guidelines
-- Use meaningful variable and function names
-- Add docstrings to all functions
-- Comment complex logic sections
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## 🙏 Acknowledgments
-
-- **Iowa Department of Transportation** for providing the motor fuel sales data
-- **Streamlit** for the excellent web app framework
-- **Plotly** for interactive visualization capabilities
-- **Scikit-learn** for machine learning algorithms
-
-## 📞 Support
-
-For questions, issues, or suggestions:
-1. Check the troubleshooting section above
-2. Review the code comments for implementation details
-3. Create an issue with detailed error information
-4. Include your Python version and operating system
-
----
-
-**Built with ❤️ for Iowa fuel industry analysis**
+def get_correlation_interpretation(correlation):
+    """Interpret correlation strength with color coding"""
+    # Very Strong (≥0.8), Strong (≥0.6), Moderate (≥0.4), etc.
+    # Returns interpretation and color for visual display
